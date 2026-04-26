@@ -2,4 +2,4 @@ package task
 
 import "errors"
 
-var ErrNotFound = errors.New("task not found")
+var ErrTaskNotFound = errors.New("task not found")
