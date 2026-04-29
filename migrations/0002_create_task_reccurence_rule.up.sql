@@ -16,3 +16,6 @@ ALTER TABLE tasks
     ADD CONSTRAINT fk_tasks_recurrence_rule 
     FOREIGN KEY (recurrence_rule_id) REFERENCES task_recurrence_rules(id) 
     ON DELETE SET NULL;
+
+CREATE UNIQUE INDEX ux_tasks_rule_scheduled
+ON tasks (recurrence_rule_id, scheduled_at);
