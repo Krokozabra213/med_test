@@ -25,7 +25,7 @@ func New(pool *pgxpool.Pool) *Repository {
 func (r *Repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
 	tx, err := r.pool.Begin(ctx)
 	if err != nil {
-		return nil, domain.NewInternal(fmt.Errorf("repository.BeginTx: %w", err))
+		return nil, domain.NewInternal(domain.MessageInternal, fmt.Errorf("repository.BeginTx: %w", err))
 	}
 
 	return tx, nil

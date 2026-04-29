@@ -1,4 +1,4 @@
-package domain
+package domainTypes
 
 import (
 	"errors"
@@ -31,24 +31,4 @@ func NewNonEmptyTime(s string) (NonEmptyTime, error) {
 	}
 
 	return NonEmptyTime{value: t}, nil
-}
-
-type NonEmptyString struct {
-	value string
-}
-
-func (n NonEmptyString) Value() string {
-	return n.value
-}
-
-func NewNonEmptyString(s string) (NonEmptyString, error) {
-	trimmed := strings.TrimSpace(s)
-
-	if len(trimmed) == 0 {
-		return NonEmptyString{}, errors.New("string shouldn't be empty")
-	}
-
-	return NonEmptyString{
-		value: trimmed,
-	}, nil
 }

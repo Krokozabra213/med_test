@@ -1,7 +1,6 @@
 package task
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -23,11 +22,11 @@ type UpdateRuleInput struct {
 	Title          domainTypes.NonEmptyString
 	Description    string
 	RecurrenceType RecurrenceType
-	Settings       json.RawMessage
+	Settings       []byte
 	ScheduledAt    domainTypes.NonEmptyTime
 }
 
-func NewUpdateRuleInput(title, desc, scheduledAt, recurrenceType string, settings json.RawMessage) (*UpdateRuleInput, error) {
+func NewUpdateRuleInput(title, desc, scheduledAt, recurrenceType string, settings []byte) (*UpdateRuleInput, error) {
 	titleVal, err := domainTypes.NewNonEmptyString(title)
 	if err != nil {
 		return nil, fmt.Errorf("invalid title: %w", err)
