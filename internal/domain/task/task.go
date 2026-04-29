@@ -107,19 +107,19 @@ func NewCreateInput(title, desc, status, scheduledAt, recurrenceType string, set
 	}, nil
 }
 
-type dailySettings struct {
+type DailySettings struct {
 	Interval int `json:"interval"`
 }
 
-type monthlyDaySettings struct {
+type MonthlyDaySettings struct {
 	Day int `json:"day"`
 }
 
-type specificDatesSettings struct {
+type SpecificDatesSettings struct {
 	Dates []string `json:"dates"`
 }
 
-type dayParitySettings struct {
+type DayParitySettings struct {
 	Parity string `json:"parity"`
 }
 
@@ -141,7 +141,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 	switch rt {
 
 	case RecurrenceDaily:
-		var s dailySettings
+		var s DailySettings
 		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid daily settings: %w", err)
 		}
@@ -150,7 +150,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 		}
 
 	case RecurrenceMonthlyDay:
-		var s monthlyDaySettings
+		var s MonthlyDaySettings
 		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid monthly_day settings: %w", err)
 		}
@@ -159,7 +159,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 		}
 
 	case RecurrenceSpecific:
-		var s specificDatesSettings
+		var s SpecificDatesSettings
 		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid specific_dates settings: %w", err)
 		}
@@ -174,7 +174,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 		}
 
 	case RecurrenceDayParity:
-		var s dayParitySettings
+		var s DayParitySettings
 		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid day_parity settings: %w", err)
 		}

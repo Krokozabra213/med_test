@@ -11,6 +11,7 @@ import (
 	"time"
 
 	infrastructurepostgres "example.com/taskservice/internal/infrastructure/postgres"
+	ruleshandler "example.com/taskservice/internal/infrastructure/workers/rules_handler"
 	postgresrepo "example.com/taskservice/internal/repository/postgres"
 	transporthttp "example.com/taskservice/internal/transport/http"
 	swaggerdocs "example.com/taskservice/internal/transport/http/docs"
@@ -46,6 +47,14 @@ func main() {
 		Handler:           router,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
+
+	worker := ruleshandler.NewRecurrenceWorker(logger, repo,
+		&ruleshandler.DailyHandler{},
+		&ruleshandler.DayParityHandler{},
+		&ruleshandler.MonthlyDayHandler{},
+		&ruleshandler.SpecificDatesHandler{},
+	)
+	go worker.Run(ctx, 5*time.Minute)
 
 	go func() {
 		<-ctx.Done()

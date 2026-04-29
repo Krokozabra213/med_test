@@ -209,3 +209,31 @@ func (r *Repository) CreateTaskWithTx(
 
 	return &created, nil
 }
+
+func (r *Repository) CreateGeneratedTask(ctx context.Context, task *taskdomain.Task, ruleID int64) error {
+	ctx, cancel := context.WithTimeout(ctx, ctxTimeout)
+	defer cancel()
+
+	query := `
+			INSERT INTO tasks (title, description, status, scheduled_at, recurrence_rule_id, created_at, updated_at)
+			VALUES (@title, @description, @status, @scheduled_at, @rule_id, @created_at, @updated_at)
+			ON CONFLICT (recurrence_rule_id, scheduled_at) DO NOTHING
+	`
+
+	args := pgx.NamedArgs{
+		"title":        task.Title,
+		"description":  task.Description,
+		"status":       task.Status,
+		"scheduled_at": task.ScheduledAt,
+		"rule_id":      ruleID,
+		"created_at":   task.CreatedAt,
+		"updated_at":   task.UpdatedAt,
+	}
+
+	_, err := r.pool.Exec(ctx, query, args)
+	if err != nil {
+		return fmt.Errorf("repository.CreateGeneratedTask: %w", err)
+	}
+
+	return nil
+}
