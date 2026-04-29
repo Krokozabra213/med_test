@@ -57,7 +57,6 @@ func (s *Service) CreateTask(ctx context.Context, input *taskdomain.CreateInput)
 		Timezone:       input.ScheduledAt.Value().Location().String(),
 		CreatedAt:      now,
 	})
-
 	if err != nil {
 		return nil, err
 	}

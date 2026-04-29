@@ -52,7 +52,7 @@ func (h *Handler) ListRule(w http.ResponseWriter, r *http.Request) {
 
 	response := make([]ruleDTO, 0, len(rules))
 	for i := range rules {
-		response = append(response, newRuleDTO(&rules[i]))
+		response = append(response, *newRuleDTO(&rules[i]))
 	}
 
 	writeJSON(w, http.StatusOK, response)

@@ -51,11 +51,9 @@ func (h *Handler) GetTaskByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ruleResp := newRuleDTO(rule)
-
 	response := taskWithRuleDTO{
 		Task: newTaskDTO(task),
-		Rule: &ruleResp,
+		Rule: newRuleDTO(rule),
 	}
 
 	writeJSON(w, http.StatusOK, response)

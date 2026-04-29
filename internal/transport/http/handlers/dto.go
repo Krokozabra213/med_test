@@ -73,12 +73,12 @@ type ruleDTO struct {
 	Timezone       string          `json:"timezone"`
 }
 
-func newRuleDTO(rule *taskdomain.Rule) ruleDTO {
+func newRuleDTO(rule *taskdomain.Rule) *ruleDTO {
 	if rule == nil {
-		return ruleDTO{}
+		return nil
 	}
 
-	return ruleDTO{
+	return &ruleDTO{
 		ID:             rule.ID,
 		Title:          rule.Title,
 		Description:    rule.Description,

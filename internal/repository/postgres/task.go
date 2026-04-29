@@ -20,7 +20,7 @@ func (r *Repository) CreateTask(ctx context.Context, task *taskdomain.Task) (*ta
 	query := `
 			INSERT INTO tasks (title, description, status, scheduled_at, created_at, updated_at)
 			VALUES (@title, @description, @status, @scheduled_at, @created_at, @updated_at)
-			RETURNING id, title, description, status, scheduled_at, created_at, updated_at
+			RETURNING id, title, description, status, scheduled_at, recurrence_rule_id, created_at, updated_at
 	`
 
 	args := pgx.NamedArgs{
@@ -42,7 +42,6 @@ func (r *Repository) CreateTask(ctx context.Context, task *taskdomain.Task) (*ta
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.NewInternal(domain.MessageInternal, fmt.Errorf("repository.CreateTask: collect row not found: %w", err))
-
 		}
 		return nil, domain.NewInternal(domain.MessageInternal, fmt.Errorf("repository.CreateTask: collect row failed: %w", err))
 	}
@@ -93,7 +92,7 @@ func (r *Repository) UpdateTask(ctx context.Context, task *taskdomain.Task) (*ta
             scheduled_at = @scheduled_at,
             updated_at = @updated_at
         WHERE id = @id
-        RETURNING id, title, description, status, scheduled_at, created_at, updated_at
+        RETURNING id, title, description, status, scheduled_at, recurrence_rule_id, created_at, updated_at
     `
 
 	args := pgx.NamedArgs{
@@ -114,7 +113,7 @@ func (r *Repository) UpdateTask(ctx context.Context, task *taskdomain.Task) (*ta
 	updated, err := pgx.CollectExactlyOneRow(rows, pgx.RowToStructByName[taskdomain.Task])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, domain.NewInternal(domain.MessageInternal, fmt.Errorf("repository.UpdateTask: collect row not found: %w", err))
+			return nil, domain.NewNotFound(taskEntity)
 		}
 		return nil, domain.NewInternal(domain.MessageInternal, fmt.Errorf("repository.UpdateTask: collect row failed: %w", err))
 	}
@@ -149,7 +148,7 @@ func (r *Repository) ListTask(ctx context.Context) ([]taskdomain.Task, error) {
 	defer cancel()
 
 	query := `
-        SELECT id, title, description, status, scheduled_at, created_at, updated_at
+        SELECT id, title, description, status, scheduled_at, recurrence_rule_id, created_at, updated_at
         FROM tasks
         ORDER BY id DESC
     `
@@ -173,7 +172,6 @@ func (r *Repository) CreateTaskWithTx(
 	tx pgx.Tx,
 	task *taskdomain.Task,
 ) (*taskdomain.Task, error) {
-
 	ctx, cancel := context.WithTimeout(ctx, ctxTimeout)
 	defer cancel()
 
@@ -182,7 +180,7 @@ func (r *Repository) CreateTaskWithTx(
 		    (title, description, status, scheduled_at, recurrence_rule_id, created_at, updated_at)
 		VALUES
 		    (@title, @description, @status, @scheduled_at, @recurrence_rule_id, @created_at, @updated_at)
-		RETURNING id, title, description, status, scheduled_at, created_at, updated_at
+		RETURNING id, title, description, status, scheduled_at, recurrence_rule_id, created_at, updated_at
 	`
 
 	args := pgx.NamedArgs{

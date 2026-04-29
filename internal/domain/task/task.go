@@ -1,6 +1,7 @@
 package task
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -123,6 +124,8 @@ type dayParitySettings struct {
 }
 
 func validateSettings(rt RecurrenceType, raw []byte) error {
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.DisallowUnknownFields()
 
 	if rt == RecurrenceNone {
 		if len(raw) != 0 && string(raw) != "{}" {
@@ -139,7 +142,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 
 	case RecurrenceDaily:
 		var s dailySettings
-		if err := json.Unmarshal(raw, &s); err != nil {
+		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid daily settings: %w", err)
 		}
 		if s.Interval <= 0 {
@@ -148,7 +151,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 
 	case RecurrenceMonthlyDay:
 		var s monthlyDaySettings
-		if err := json.Unmarshal(raw, &s); err != nil {
+		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid monthly_day settings: %w", err)
 		}
 		if s.Day < 1 || s.Day > 30 {
@@ -157,7 +160,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 
 	case RecurrenceSpecific:
 		var s specificDatesSettings
-		if err := json.Unmarshal(raw, &s); err != nil {
+		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid specific_dates settings: %w", err)
 		}
 		if len(s.Dates) == 0 {
@@ -172,7 +175,7 @@ func validateSettings(rt RecurrenceType, raw []byte) error {
 
 	case RecurrenceDayParity:
 		var s dayParitySettings
-		if err := json.Unmarshal(raw, &s); err != nil {
+		if err := dec.Decode(&s); err != nil {
 			return fmt.Errorf("invalid day_parity settings: %w", err)
 		}
 
