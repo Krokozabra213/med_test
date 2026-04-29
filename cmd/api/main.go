@@ -35,11 +35,11 @@ func main() {
 	}
 	defer pool.Close()
 
-	taskRepo := postgresrepo.New(pool)
-	taskUsecase := task.NewService(taskRepo)
-	taskHandler := httphandlers.NewTaskHandler(taskUsecase)
+	repo := postgresrepo.New(pool)
+	usecase := task.NewService(repo)
+	handler := httphandlers.NewHandler(usecase, logger)
 	docsHandler := swaggerdocs.NewHandler()
-	router := transporthttp.NewRouter(taskHandler, docsHandler)
+	router := transporthttp.NewRouter(handler, docsHandler)
 
 	server := &http.Server{
 		Addr:              cfg.HTTPAddr,
