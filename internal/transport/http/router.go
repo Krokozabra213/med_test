@@ -24,10 +24,10 @@ func NewRouter(handler *httphandlers.Handler, docsHandler *swaggerdocs.Handler) 
 	api.HandleFunc("/tasks/{id:[0-9]+}", handler.UpdateTask).Methods(http.MethodPut)
 	api.HandleFunc("/tasks/{id:[0-9]+}", handler.DeleteTask).Methods(http.MethodDelete)
 
-	api.HandleFunc("/rule", handler.ListRule).Methods(http.MethodGet)
-	api.HandleFunc("/rule/{id:[0-9]+}", handler.GetRuleByID).Methods(http.MethodGet)
-	api.HandleFunc("/rule/{id:[0-9]+}", handler.UpdateRule).Methods(http.MethodPut)
-	api.HandleFunc("/rule/{id:[0-9]+}", handler.DeleteRule).Methods(http.MethodDelete)
+	api.HandleFunc("/rules", handler.ListRule).Methods(http.MethodGet)
+	api.HandleFunc("/rules/{id:[0-9]+}", handler.GetRuleByID).Methods(http.MethodGet)
+	api.HandleFunc("/rules/{id:[0-9]+}", handler.UpdateRule).Methods(http.MethodPut)
+	api.HandleFunc("/rules/{id:[0-9]+}", handler.DeleteRule).Methods(http.MethodDelete)
 
 	return router
 }

@@ -54,7 +54,7 @@ func main() {
 		&ruleshandler.MonthlyDayHandler{},
 		&ruleshandler.SpecificDatesHandler{},
 	)
-	go worker.Run(ctx, 5*time.Minute)
+	go worker.Run(ctx, 1*time.Minute)
 
 	go func() {
 		<-ctx.Done()

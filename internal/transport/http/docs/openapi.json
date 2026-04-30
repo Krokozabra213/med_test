@@ -127,7 +127,7 @@
 				}
 			}
 		},
-		"/api/v1/rule": {
+		"/api/v1/rules": {
 			"get": {
 				"tags": ["Rules"],
 				"summary": "List all recurrence rules",
@@ -148,7 +148,7 @@
 				}
 			}
 		},
-		"/api/v1/rule/{id}": {
+		"/api/v1/rules/{id}": {
 			"get": {
 				"tags": ["Rules"],
 				"summary": "Get recurrence rule by ID",

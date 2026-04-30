@@ -40,11 +40,12 @@ func NewRecurrenceWorker(
 }
 
 func (w *RecurrenceWorker) RunOnce(ctx context.Context) error {
-
 	rules, err := w.repo.ListRule(ctx)
 	if err != nil {
 		return err
 	}
+
+    w.log.Warn("RecurrenceWorker.RunOnce","rules_count", len(rules))
 
 	for _, rule := range rules {
 		if err := w.processRule(ctx, &rule); err != nil {
@@ -73,6 +74,7 @@ func (w *RecurrenceWorker) Run(ctx context.Context, period time.Duration) {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
+			w.log.Info("RecurrenceWorker", "op", "RunOnce")
 			if err = w.RunOnce(ctx); err != nil {
 				w.log.Warn("RecurrenceWorker.RunOnce", "error", err.Error())
 			}
@@ -81,7 +83,6 @@ func (w *RecurrenceWorker) Run(ctx context.Context, period time.Duration) {
 }
 
 func (w *RecurrenceWorker) processRule(ctx context.Context, rule *taskdomain.Rule) error {
-
 	loc, err := time.LoadLocation(rule.Timezone)
 	if err != nil {
 		return err
